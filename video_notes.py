@@ -9,7 +9,7 @@ load_dotenv()
 
 def get_presigned_url(folder_name, file_name, file_type):
     # API Gateway URL
-    api_url = f"{os.environ["API_URL"]}?folder_name={folder_name}&file_name={file_name}&file_type={file_type}"
+    api_url = f"{os.environ['API_URL']}?folder_name={folder_name}&file_name={file_name}&file_type={file_type}"
     
     response = requests.get(api_url)
     response_data = response.json()
