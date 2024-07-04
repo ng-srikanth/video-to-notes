@@ -3,17 +3,25 @@ import requests
 import json
 import boto3
 import time
+import os
+from dotenv import load_dotenv
+load_dotenv()
 
 def get_presigned_url(folder_name, file_name, file_type):
     # API Gateway URL
-    api_url = f"https://par1ulposi.execute-api.us-east-1.amazonaws.com/default/edtech-s3-presigned-url?folder_name={folder_name}&file_name={file_name}&file_type={file_type}"
+    api_url = f"{os.environ["API_URL"]}?folder_name={folder_name}&file_name={file_name}&file_type={file_type}"
     
     response = requests.get(api_url)
     response_data = response.json()
     return response_data['upload_url']
 
+aws_access_key_id = os.environ["AWS_ACCESS_KEY"]
+aws_secret_access_key = os.environ["AWS_ACCESS_KEY_ID"]
+aws_region_name = os.environ["AWS_REGION"]
 def check_md_file(bucket_name, folder_name, file_name):
-    s3 = boto3.client('s3')
+    s3 = boto3.client('s3',aws_access_key_id=aws_access_key_id,
+                      aws_secret_access_key=aws_secret_access_key,
+                      region_name=aws_region_name)
     md_file_key = f"{folder_name}/{file_name}.md"
     try:
         s3.head_object(Bucket=bucket_name, Key=md_file_key)
@@ -22,7 +30,9 @@ def check_md_file(bucket_name, folder_name, file_name):
         return False
     
 def get_md_file_content(bucket_name, folder_name, file_name):
-    s3 = boto3.client('s3')
+    s3 = boto3.client('s3',aws_access_key_id=aws_access_key_id,
+                      aws_secret_access_key=aws_secret_access_key,
+                      region_name=aws_region_name)
     md_file_key = f"{folder_name}/{file_name}.md"
     response = s3.get_object(Bucket=bucket_name, Key=md_file_key)
     content = response['Body'].read().decode('utf-8')
