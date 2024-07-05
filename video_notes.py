@@ -111,7 +111,8 @@ s3 = boto3.client('s3',aws_access_key_id=aws_access_key_id,
 # s3 = boto3.client('s3')
 def get_presigned_url(folder_name, file_name, file_type):
     # API Gateway URL
-    api_url = f"https://par1ulposi.execute-api.us-east-1.amazonaws.com/default/edtech-s3-presigned-url?folder_name={folder_name}&file_name={file_name}&file_type={file_type}"
+    api_url = os.environ["API_URL"]
+    api_url = f"{api_url}?folder_name=videos&file_name={file_name}&file_type={file_type}"
     
     response = requests.get(api_url)
     response_data = response.json()
@@ -159,7 +160,7 @@ if uploaded_file is not None:
         st.success(f"File '{file_name}' uploaded successfully!")
         
         
-        bucket_name = 'edtech-app-version-bucket'
+        bucket_name = os.environ["BUCKET_NAME"]
         md_file_found = False
         # Max waiting time 5 minutes
         max_wait_time = 300 
